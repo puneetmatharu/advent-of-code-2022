@@ -1,0 +1,29 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 25,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "opt",
+      "displayName": "Ninja",
+      "description": "Default macOS build",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      },
+      "environment": {
+        "CC": "clang",
+        "CXX": "clang++"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "opt",
+      "configurePreset": "opt"
+    }
+  ]
+}
