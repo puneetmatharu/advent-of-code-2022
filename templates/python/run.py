@@ -7,18 +7,11 @@ TEST_DATA_PATH = Path.cwd().parent / "data" / "test.dat"
 
 
 def solve_pt1(text: str) -> int:
-    groups = text.split("\n\n")
-    cals_per_elf = [sum(map(int, x.split("\n"))) for x in groups]
-    max_cals = max(cals_per_elf)
-    return max_cals
+    return None
 
 
 def solve_pt2(text: str) -> int:
-    groups = text.split("\n\n")
-    cals_per_elf = [sum(map(int, x.split("\n"))) for x in groups]
-    cals_per_elf = sorted(cals_per_elf)
-    assert len(cals_per_elf) > 3
-    return sum(cals_per_elf[-3:])
+    return None
 
 
 def load(fpath: str) -> List[str]:
