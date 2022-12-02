@@ -33,10 +33,6 @@ def to_lose(move: Move) -> Move:
 CYCLE = [Move.Rock, Move.Scissors, Move.Paper]
 
 
-# Cyclic array; A beats B, B beats C, C beats A
-WIN_CYCLE = [Move.Rock, Move.Scissors, Move.Paper]
-
-
 def does_beat(your_move: Move, their_move: Move) -> bool:
     return True if their_move == to_lose(your_move) else False
 
