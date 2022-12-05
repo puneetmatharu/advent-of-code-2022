@@ -1,120 +1,75 @@
-import re
-from copy import deepcopy as dc
+from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 EXAMPLE_DATA_PATH = Path.cwd().parent / "data" / "example.dat"
 TEST_DATA_PATH = Path.cwd().parent / "data" / "test.dat"
 
 
-@dataclass
-class Move:
-    num_crate: int
-    start: int
-    end: int
+def get_message(crates: list[list[str]]) -> None:
+    return "".join([stack[-1] for stack in crates if len(stack) > 0])
 
 
-@dataclass
-class Crates:
-    crates: list[list[str]]
-
-    def get_message(self) -> None:
-        message = ""
-        for stack in self.crates:
-            if len(stack) > 0:
-                message += stack[-1]
-        return message
-
-
-class CrateMover9000:
-    @staticmethod
-    def move(crates: Crates, n: int, start: int, end: int) -> None:
-        assert len(crates[start]) >= n
-        taken = crates[start][-n:]
+def solve_pt1(crates: list[list[str]], moves: list[tuple[int, int, int]]) -> int:
+    for (n, start, end) in moves:
+        crates[end] = crates[end] + crates[start][-n:][::-1]
         crates[start] = crates[start][:-n]
-        crates[end] = crates[end] + taken[::-1]
-        return crates
+    return get_message(crates)
 
 
-class CrateMover9001:
-    @staticmethod
-    def move(crates: Crates, n: int, start: int, end: int) -> None:
-        assert len(crates[start]) >= n
-        taken = crates[start][-n:]
+def solve_pt2(crates: list[list[str]], moves: list[tuple[int, int, int]]) -> int:
+    for (n, start, end) in moves:
+        crates[end] = crates[end] + crates[start][-n:]
         crates[start] = crates[start][:-n]
-        crates[end] = crates[end] + taken
-        return crates
+    return get_message(crates)
 
 
-def solve_pt1(crates: Crates, moves: list[Move]) -> int:
-    for move in moves:
-        crates.crates = CrateMover9000.move(
-            crates.crates, move.num_crate, move.start - 1, move.end - 1)
-    return crates.get_message()
-
-
-def solve_pt2(crates: Crates, moves: list[Move]) -> int:
-    for move in moves:
-        crates.crates = CrateMover9001.move(
-            crates.crates, move.num_crate, move.start - 1, move.end - 1)
-    return crates.get_message()
-
-
-def parse_crate_line(line: str, n_column: int) -> list[Optional[str]]:
-    assert (len(line) + 1) == (n_column * 4)
-    crates = [line[4*i+1] for i in range(n_column)]
-    return crates
-
-
-def load(fpath: str) -> tuple[Crates, list[Move]]:
+def load(fpath: str) -> tuple[list[list[str]], list[tuple[int, int, int]]]:
     lines = None
     with open(fpath, "r") as f:
         lines = f.read().split("\n")
-    height = 0
-    for i, line in enumerate(lines):
-        if line.startswith(" 1"):
-            height = i
-    crates_info = lines[:height]
 
-    n_column = int(re.sub(" +", " ", lines[height].strip()).split(" ")[-1])
+    stack_height = next(i for (i, l) in enumerate(lines) if l.startswith(" 1"))
+    crates_info = lines[:stack_height]
 
+    n_column = int(lines[stack_height].strip().split(" ")[-1])
     crates = [[] for _ in range(n_column)]
-    for line in reversed(crates_info):
-        for (i, letter) in enumerate(parse_crate_line(line, n_column)):
+    for line in crates_info[::-1]:
+        crate_labels = [line[4 * i + 1] for i in range(n_column)]
+        for (i, letter) in enumerate(crate_labels):
             if letter != " ":
                 crates[i] += letter
-    crates = Crates(crates)
 
-    moves_info = lines[height+2:]
+    moves_info = lines[stack_height + 2:]
     moves = [None] * len(moves_info)
-    for i, line in enumerate(moves_info):
-        moves[i] = Move(*map(int, line.split(" ")[1:6:2]))
+    for (i, line) in enumerate(moves_info):
+        (num_crate, start, end) = list(map(int, line.split(" ")[1::2]))
+        moves[i] = (num_crate, start - 1, end - 1)
     return (crates, moves)
 
 
 def main() -> int:
-    (crates1, moves1) = load(EXAMPLE_DATA_PATH)
-    (crates2, moves2) = load(TEST_DATA_PATH)
+    (crates_example, moves_example) = load(EXAMPLE_DATA_PATH)
+    (crates_test, moves_test) = load(TEST_DATA_PATH)
 
     example_answer1 = "CMZ"
     example_answer2 = "MCD"
     test_answer1 = "SBPQRSCDF"
     test_answer2 = "RGLVRCQSB"
 
-    answer11 = solve_pt1(dc(crates1), dc(moves1))
+    answer11 = solve_pt1(deepcopy(crates_example), deepcopy(moves_example))
+    answer12 = solve_pt1(deepcopy(crates_test), deepcopy(moves_test))
     print(f"[EXAMPLE] Answer to Part 1: {answer11}")
-    assert answer11 == example_answer1
-    answer12 = solve_pt1(dc(crates2), dc(moves2))
     print(f"[TEST] Answer to Part 1: {answer12}")
+    assert answer11 == example_answer1
     assert answer12 == test_answer1
 
-    answer21 = solve_pt2(dc(crates1), dc(moves1))
+    answer21 = solve_pt2(deepcopy(crates_example), deepcopy(moves_example))
+    answer22 = solve_pt2(deepcopy(crates_test), deepcopy(moves_test))
     print(f"[EXAMPLE] Answer to Part 2: {answer21}")
-    assert answer21 == example_answer2
-    answer22 = solve_pt2(dc(crates2), dc(moves2))
     print(f"[TEST] Answer to Part 2: {answer22}")
+    assert answer21 == example_answer2
     assert answer22 == test_answer2
 
 
