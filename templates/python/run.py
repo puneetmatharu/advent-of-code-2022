@@ -25,19 +25,24 @@ def main() -> int:
     data1 = load(EXAMPLE_DATA_PATH)
     data2 = load(TEST_DATA_PATH)
 
-    example_answer1 = 24000
-    example_answer2 = 45000
+    example_solution1 = 0
+    # example_solution2 = 0
+    # test_solution1 = 0
+    # test_solution2 = 0
 
-    answer1 = solve_pt1(data1)
-    print(f"[EXAMPLE] Answer to Part 1: {answer1}")
-    assert answer1 == example_answer1
-    # print(f"[TEST] Answer to Part 1: {solve_pt1(data2)}")
+    example_answer1 = solve_pt1(data1)
+    print(f"[EXAMPLE] Answer to Part 1: {example_answer1}")
+    assert example_answer1 == example_solution1
+    # test_answer1 = solve_pt1(data2)
+    # print(f"[TEST] Answer to Part 1: {test_answer1}")
+    # assert test_answer1 == test_solution1
 
-    # answer2 = solve_pt2(data1)
-    # print(f"[EXAMPLE] Answer to Part 2: {answer2}")
-    # assert answer2 == example_answer2
-    # print(f"[TEST] Answer to Part 2: {solve_pt2(data2)}")
-
+    # example_answer2 = solve_pt2(data1)
+    # print(f"[EXAMPLE] Answer to Part 2: {example_answer2}")
+    # assert example_answer2 == example_solution2
+    # test_answer2 = solve_pt2(data2)
+    # print(f"[TEST] Answer to Part 2: {test_answer2}")
+    # assert test_answer2 == test_solution2
 
 if __name__ == "__main__":
     main()
