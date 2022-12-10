@@ -1,4 +1,5 @@
 # Other Python, C++, Rust
+*.ipynb
 build/
 target/
 
