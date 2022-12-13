@@ -7,20 +7,10 @@ EXAMPLE_DATA_PATH = Path.cwd().parent / "data" / "example.dat"
 TEST_DATA_PATH = Path.cwd().parent / "data" / "test.dat"
 
 
-def is_int(x) -> bool:
-    return isinstance(x, int)
-
-
-def is_list(x) -> bool:
-    return isinstance(x, list)
-
-
-def is_str(x) -> bool:
-    return isinstance(x, str)
-
-
 def is_valid_packet(x: Union[int, list], y: Union[int, list]) -> bool:
-    # int vs int
+    def is_int(x) -> bool: return isinstance(x, int)
+    def is_list(x) -> bool: return isinstance(x, list)
+
     if is_int(x) and is_int(y):
         if x < y:
             return True
@@ -65,9 +55,9 @@ def solve_pt2(data: list[tuple]) -> int:
     packets = [x for pair in data for x in pair]
     packets += [[[2]], [[6]]]
     packets = sorted(packets, key=functools.cmp_to_key(compare))
-    divp1 = packets.index([[2]]) + 1
-    divp2 = packets.index([[6]]) + 1
-    return divp1 * divp2
+    i_divider_packet1 = packets.index([[2]]) + 1
+    i_divider_packet2 = packets.index([[6]]) + 1
+    return i_divider_packet1 * i_divider_packet2
 
 
 def load(fpath: str) -> str:
@@ -84,8 +74,8 @@ def main() -> int:
 
     example_solution1 = 13
     example_solution2 = 140
-    test_solution1 = 5013
-    test_solution2 = 25038
+    test_solution1 = 5_013
+    test_solution2 = 25_038
 
     example_answer1 = solve_pt1(data1)
     print(f"[EXAMPLE] Answer to Part 1: {example_answer1}")
