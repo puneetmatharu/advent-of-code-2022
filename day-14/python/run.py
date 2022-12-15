@@ -21,7 +21,7 @@ class Feature(IntEnum):
     Sand = 3
 
 
-def draw(rock_map: np.ndarray):
+def draw(feature_map: np.ndarray):
     def to_str(x: Feature):
         return {
             Feature.Air: ".",
@@ -29,7 +29,7 @@ def draw(rock_map: np.ndarray):
             Feature.Rock: "#",
             Feature.Sand: "o",
         }[x]
-    return "\n".join(["".join(list(map(to_str, row))) for row in rock_map])
+    return "\n".join(["".join(list(map(to_str, row))) for row in feature_map])
 
 
 def solve_pt1(map_data: Map) -> int:
@@ -104,14 +104,14 @@ def load(fpath: str) -> Map:
         for (i, j) in rock_path:
             (i_max, j_min, j_max) = (max(i, i_max), min(j, j_min), max(j, j_max))
     data = [[(i, j - j_min) for (i, j) in rock_path] for rock_path in data]
-    rock_map = np.zeros(shape=(i_max + 1, j_max - j_min + 1), dtype=int)
+    feature_map = np.zeros(shape=(i_max + 1, j_max - j_min + 1), dtype=int)
     for path in data:
         for ((i1, j1), (i2, j2)) in zip(path[:-1], path[1:]):
             ((i_s, i_e), (j_s, j_e)) = (sorted([i1, i2]), sorted([j1, j2]))
-            rock_map[i_s:i_e + 1, j_s:j_e + 1] = Feature.Rock
+            feature_map[i_s:i_e + 1, j_s:j_e + 1] = Feature.Rock
     source = (0, 500 - j_min)
-    rock_map[source] = Feature.Source
-    return Map(rock_map, source)
+    feature_map[source] = Feature.Source
+    return Map(feature_map, source)
 
 
 def main() -> int:

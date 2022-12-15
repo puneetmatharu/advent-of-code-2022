@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from math import lcm
 from pathlib import Path
 
 
@@ -14,30 +15,20 @@ class Monkey:
     if_false: int
     div: int
 
-    def __len__(self):
-        return len(self.items)
-
-    def add(self, new: int):
-        return self.items.append(new)
-
-    def take(self):
-        return self.items.pop(0)
-
     def apply(self, old):
         return eval(self.op)
 
     def next_monkey(self, i: int):
-        test = (i % self.div == 0)
-        return self.if_true if test else self.if_false
+        return self.if_true if (i % self.div == 0) else self.if_false
 
 
 def solve_pt1(monkeys: list[Monkey]) -> int:
     counts = [0] * len(monkeys)
     for _ in range(20):
         for i, m in enumerate(monkeys):
-            for _ in range(len(m)):
-                new_worry = m.apply(old=m.take()) // 3
-                monkeys[m.next_monkey(new_worry)].add(new_worry)
+            for _ in range(len(m.items)):
+                new_worry = m.apply(old=m.items.pop(0)) // 3
+                monkeys[m.next_monkey(new_worry)].items.append(new_worry)
                 counts[i] += 1
     (x, y) = sorted(counts)[-2:]
     return x * y
@@ -45,17 +36,13 @@ def solve_pt1(monkeys: list[Monkey]) -> int:
 
 def solve_pt2(monkeys: list[Monkey]) -> int:
     counts: list[int] = [0 for _ in monkeys]
-    for r in range(600):
+    lcm_div = lcm(*[m.div for m in monkeys])
+    for r in range(10000):
         for i, m in enumerate(monkeys):
-            for _ in range(len(m)):
-                new_worry = m.apply(old=m.take())
-                monkeys[m.next_monkey(new_worry)].add(new_worry)
+            for _ in range(len(m.items)):
+                new_worry = m.apply(old=m.items.pop(0)) % lcm_div
+                monkeys[m.next_monkey(new_worry)].items.append(new_worry)
                 counts[i] += 1
-
-        if r % 100 == 0:
-            print(f"== After round {r} ==")
-            for i in range(len(monkeys)):
-                print(f"Monkey {i} inspected items {counts[i]} times.")
     (x, y) = sorted(counts)[-2:]
     return x * y
 
@@ -78,13 +65,10 @@ def load(fpath: str) -> list[Monkey]:
 
 
 def main() -> int:
-    data1 = load(EXAMPLE_DATA_PATH)
-    data2 = load(TEST_DATA_PATH)
-
     example_solution1 = 10605
     example_solution2 = 2713310158
     test_solution1 = 110220
-    # test_solution2 = 0
+    test_solution2 = 19457438264
 
     example_answer1 = solve_pt1(load(EXAMPLE_DATA_PATH))
     print(f"[EXAMPLE] Answer to Part 1: {example_answer1}")
@@ -96,9 +80,9 @@ def main() -> int:
     example_answer2 = solve_pt2(load(EXAMPLE_DATA_PATH))
     print(f"[EXAMPLE] Answer to Part 2: {example_answer2}")
     assert example_answer2 == example_solution2
-    # test_answer2 = solve_pt2(load(TEST_DATA_PATH))
-    # print(f"[TEST] Answer to Part 2: {test_answer2}")
-    # assert test_answer2 == test_solution2
+    test_answer2 = solve_pt2(load(TEST_DATA_PATH))
+    print(f"[TEST] Answer to Part 2: {test_answer2}")
+    assert test_answer2 == test_solution2
 
 
 if __name__ == "__main__":
