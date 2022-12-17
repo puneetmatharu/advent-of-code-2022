@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import List
 
 
 EXAMPLE_DATA_PATH = Path.cwd().parent / "data" / "example.dat"

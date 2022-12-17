@@ -54,11 +54,13 @@ def highest_rock(chamber: Chamber):
 def simulate_rock(chamber: Chamber, rock: Rock, jp: JetPattern) -> Chamber:
     def does_overlap(chamber, rock, i_bl, j_bl) -> bool:
         return np.any(rock & chamber[i_bl:i_bl + rock.shape[0], j_bl:j_bl + rock.shape[1]])
+
     # Pad chamber
     (ch, rh, hr) = (chamber.shape[0], rock.shape[0], highest_rock(chamber))
     if ch < (hr + 3 + rh):
         num_rows_to_add = (hr + 3 + rh) - ch
         chamber = np.pad(chamber, pad_width=((0, num_rows_to_add), (0, 0)))
+
     # Simulate
     hr = highest_rock(chamber)
     (rh, rw) = rock.shape
@@ -70,6 +72,7 @@ def simulate_rock(chamber: Chamber, rock: Rock, jp: JetPattern) -> Chamber:
         if (j_new >= 0) and ((j_new + rw - 1) < chamber.shape[1]):
             if not does_overlap(chamber, rock, i_new, j_new):
                 (i_rock, j_rock) = (i_new, j_new)
+
         # Try to fall
         (i_new, j_new) = (i_rock - 1, j_rock)
         if (i_rock == 0) or does_overlap(chamber, rock, i_new, j_new):
@@ -88,6 +91,10 @@ def solve_pt1(jp: JetPattern) -> int:
 
 
 def solve_pt2(jp: JetPattern) -> int:
+    chamber = np.ndarray((3, 7), dtype=bool)
+    for i in range(1_000_000):
+        chamber = simulate_rock(chamber, ROCKS[i % len(ROCKS)], jp)
+    hr = highest_rock(chamber)
     return None
 
 
