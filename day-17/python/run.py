@@ -98,7 +98,7 @@ def solve_pt1(jp: JetPattern) -> int:
 def solve_pt2(jp: JetPattern) -> int:
     chamber = Chamber(data=np.ndarray((3, 7), dtype=bool))
     num_rock = len(ROCKS)
-    history = np.array([0])  # rock
+    history = np.array([0])
 
     (start, end) = (None, None)
     (uids, uids_as_list) = (set(), [None])
