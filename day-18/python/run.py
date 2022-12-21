@@ -45,7 +45,7 @@ def solve_pt2(cubes: list[Cube]) -> int:
     # Construct grid of connected cubes from water cube locations
     water_cubes = points_to_connected_cubes(np.argwhere(water_box == True))
 
-    # Find all connected outer water cubes
+    # Proliferate to find all connected outer water cubes
     outer_water_cubes_ids = [next(c.cube_id for c in water_cubes if np.all(c.x == [0, 0, 0]))]
     searching = True
     while searching:
